@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "okkindred_download_images", "okkindred_download_images.csproj", "{396E49A9-2B51-4213-8AD4-7AC843927B1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "okkindred_download_images_mstest", "..\okkindred_download_images_mstest\okkindred_download_images_mstest.csproj", "{04E92D9D-A758-4ECF-AA73-8D3147DE0468}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{396E49A9-2B51-4213-8AD4-7AC843927B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396E49A9-2B51-4213-8AD4-7AC843927B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396E49A9-2B51-4213-8AD4-7AC843927B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396E49A9-2B51-4213-8AD4-7AC843927B1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04E92D9D-A758-4ECF-AA73-8D3147DE0468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04E92D9D-A758-4ECF-AA73-8D3147DE0468}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04E92D9D-A758-4ECF-AA73-8D3147DE0468}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04E92D9D-A758-4ECF-AA73-8D3147DE0468}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8B13823-5393-4666-A806-30BDF450CCD2}
+	EndGlobalSection
+EndGlobal
