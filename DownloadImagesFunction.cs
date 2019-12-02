@@ -6,11 +6,13 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
+using System.Text;
 
 namespace okkindred_download_images
 {
@@ -18,12 +20,27 @@ namespace okkindred_download_images
     {
         static HttpClient httpClient;
 
+        static IConfigurationRoot config;
+
         [FunctionName("okkindred_download_images")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log)
+            ILogger log,
+            ExecutionContext context)
         {
             log.LogInformation("okkindred_download_images C# HTTP trigger function processed a request.");
+
+            // Azure function config
+            // https://blog.jongallant.com/2018/01/azure-function-config/
+
+            if (config == null)
+            { 
+                config = new ConfigurationBuilder()
+                    .SetBasePath(context.FunctionAppDirectory)
+                    .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+            }
 
             string requestBody;
             using (var sr = new StreamReader(req.Body))
@@ -57,6 +74,11 @@ namespace okkindred_download_images
             if (httpClient == null)
             {
                 httpClient = new HttpClient();
+            }
+
+            if (!await Authenticated(data.token, log))
+            {
+                return new BadRequestObjectResult("invalid token");
             }
 
             var downloadTasks = new List<Task<DownloadData>>();
@@ -96,10 +118,34 @@ namespace okkindred_download_images
 
             outputMemStream.Position = 0;
 
-            var response = new FileStreamResult(outputMemStream, "application/octet-stream");
-            response.FileDownloadName = data.zip_filename;
+            var response = new FileStreamResult(outputMemStream, "application/zip")
+            {
+                FileDownloadName = data.zip_filename,
+            };
 
             return response;           
+        }
+
+        private static async Task<bool> Authenticated(string token, ILogger log)
+        {
+            try
+            {
+                var endpoint = config["AuthEndpoint"];
+                var content = new AuthRequest { token = token };
+                var json = JsonConvert.SerializeObject(content);
+                var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var result = await httpClient.PostAsync(endpoint, stringContent);
+
+                return result.StatusCode == System.Net.HttpStatusCode.OK;
+            }
+            catch(Exception ex)
+            {
+                log.LogInformation(ex.Message);
+                return false;
+            }
+
+            
         }
 
         private static async Task<DownloadData> GetImageStream(string file)
